@@ -1,0 +1,21 @@
+Need:
+
+Ball
+    - Move with keypress
+    - ball can move left or right any time
+    - ball can move down if there is a gap in the line
+
+
+Lines:
+    - constantly moving up the screen
+    - move up the screen faster as time goes on - how to track time:
+        var start = new Date();
+        var elapsed = new Date() - start;
+        Check elapsed time each second
+    - If time > 10s:
+        speed ++
+    - have random gaps in the lines - search weighted random
+    - maybe have a grid system
+
+Score:
+    - Number of rows the ball passes through
