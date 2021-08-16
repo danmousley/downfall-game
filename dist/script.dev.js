@@ -231,6 +231,10 @@ document.addEventListener("DOMContentLoaded", function () {
       myObstacles[i].update();
     }
 
+    if (myGamePiece.y == 0) {
+      myGameArea.stop();
+    }
+
     score.text = "SCORE: " + counter;
     score.update(); // myGameBall.update()
 

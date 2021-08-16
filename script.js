@@ -208,6 +208,9 @@ document.addEventListener("DOMContentLoaded", () => {
             myObstacles[i].y += -1
             myObstacles[i].update()
         }
+        if (myGamePiece.y == 0) {
+            myGameArea.stop()
+        }
         score.text = "SCORE: " + counter
         score.update()
         // myGameBall.update()
