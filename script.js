@@ -102,6 +102,38 @@ document.addEventListener("DOMContentLoaded", () => {
             }
             return crash
         }
+
+        this.touchLeft = function(otherobj) {
+            let myleft = this.x
+            let myright = this.x + (this.width)
+            let mytop = this.y
+            let mybottom = this.y + (this.height)
+            let otherleft = otherobj.x
+            let otherright = otherobj.x + (otherobj.width)
+            let othertop = otherobj.y
+            let otherbottom = otherobj.y + (otherobj.height)
+            let touch = false
+            if ((myright > otherleft) && (mybottom > othertop) && (myleft < otherleft) && (mytop > otherbottom)) {
+                touchleft = true
+            }
+            return touch
+        }
+
+        this.touchRight = function(otherobj) {
+            let myleft = this.x
+            let myright = this.x + (this.width)
+            let mytop = this.y
+            let mybottom = this.y + (this.height)
+            let otherleft = otherobj.x
+            let otherright = otherobj.x + (otherobj.width)
+            let othertop = otherobj.y
+            let otherbottom = otherobj.y + (otherobj.height)
+            let touch = false
+            if ((myleft < otherright) && (mybottom > othertop) && (myright > otherright) && (mytop > otherbottom)) {
+                touchleft = true
+            }
+            return touch
+        }
     }
 
     // function to clear and update game area
@@ -125,13 +157,15 @@ document.addEventListener("DOMContentLoaded", () => {
         myGamePiece.speedX = 0 // reset speeds to zero, therefore object stops if button press stops
         myGamePiece.speedY = 0
         for (i = 0; i < myObstacles.length; i++) {
+            // if (myGamePiece.touchLeft(myObstacles[i])) {
+            //     myGamePiece.x = myObstacles[i]
             if (myGamePiece.crashWith(myObstacles[i])) {
                 myGamePiece.gravitySpeed = 0
                 // myGamePiece.gravity = 0
                 // myGamePiece.speedY = -0.5
                 myGamePiece.y = myObstacles[i].y - myGamePiece.height
                 // myGamePiece.update()
-            } 
+            }
             if (myGamePiece.y > myObstacles[i].y) {
                 counter += 0.5
             }

@@ -105,6 +105,42 @@ document.addEventListener("DOMContentLoaded", function () {
 
       return crash;
     };
+
+    this.touchLeft = function (otherobj) {
+      var myleft = this.x;
+      var myright = this.x + this.width;
+      var mytop = this.y;
+      var mybottom = this.y + this.height;
+      var otherleft = otherobj.x;
+      var otherright = otherobj.x + otherobj.width;
+      var othertop = otherobj.y;
+      var otherbottom = otherobj.y + otherobj.height;
+      var touch = false;
+
+      if (myright > otherleft && mybottom > othertop && myleft < otherleft && mytop > otherbottom) {
+        touchleft = true;
+      }
+
+      return touch;
+    };
+
+    this.touchRight = function (otherobj) {
+      var myleft = this.x;
+      var myright = this.x + this.width;
+      var mytop = this.y;
+      var mybottom = this.y + this.height;
+      var otherleft = otherobj.x;
+      var otherright = otherobj.x + otherobj.width;
+      var othertop = otherobj.y;
+      var otherbottom = otherobj.y + otherobj.height;
+      var touch = false;
+
+      if (myleft < otherright && mybottom > othertop && myright > otherright && mytop > otherbottom) {
+        touchleft = true;
+      }
+
+      return touch;
+    };
   } // function to clear and update game area
 
 
@@ -137,6 +173,8 @@ document.addEventListener("DOMContentLoaded", function () {
     myGamePiece.speedY = 0;
 
     for (i = 0; i < myObstacles.length; i++) {
+      // if (myGamePiece.touchLeft(myObstacles[i])) {
+      //     myGamePiece.x = myObstacles[i]
       if (myGamePiece.crashWith(myObstacles[i])) {
         myGamePiece.gravitySpeed = 0; // myGamePiece.gravity = 0
         // myGamePiece.speedY = -0.5
