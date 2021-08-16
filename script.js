@@ -12,8 +12,8 @@ document.addEventListener("DOMContentLoaded", () => {
     // create canvas and game pieces
     function startGame() {
         myGameArea.start()
-        myGamePiece = new component(30, 30, "red", 30, 30)
-        myGameBall = new component(30, 30, "green", 100, 30, "circle")
+        myGamePiece = new component(30, 30, "red", 30, 30, "circle")
+        // myGameBall = new component(30, 30, "green", 100, 30, "circle")
         score = new component("30px", "Consolas", "black", 280, 40, "text")
         // myObstacle = new component(250, 10, "green", 0, 250)
     }
@@ -68,9 +68,11 @@ document.addEventListener("DOMContentLoaded", () => {
                 ctx.fillStyle = color
                 ctx.fillText(this.text, this.x, this.y)
             } else if (this.type == "circle") {
+                ctx.beginPath()
                 ctx.arc(this.x+this.width/2, this.y+this.height/2, this.width/2, 0, Math.PI*2, false)
                 ctx.fillStyle = color
                 ctx.fill()
+                ctx.closePath()
             } else {
                 ctx.fillStyle = color
                 ctx.fillRect(this.x, this.y, this.width, this.height) // draws a rectangle filled with above style
@@ -83,14 +85,31 @@ document.addEventListener("DOMContentLoaded", () => {
 
             this.y += this.speedY + this.gravitySpeed
             this.hitBottom()
+            this.crossRight()
+            this.crossLeft()
         }
 
+        //stop the ball if it touches the bottom
         this.hitBottom = function () {
             let rockbottom = myGameArea.canvas.height - this.height
             if (this.y > rockbottom) {
                 this.y = rockbottom
             }
         }
+
+        //make the ball come back onto the other side
+        this.crossRight = function() {
+            if (this.x > myGameArea.canvas.width) {
+                this.x = 5
+            }
+        }
+
+        this.crossLeft = function() {
+            if (this.x + this.width < 0) {
+                this.x = myGameArea.canvas.width - 5
+            }
+        }
+
         // function that determines if the objects overlap
         this.crashWith = function(otherobj) {
             let myleft = this.x
@@ -191,7 +210,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
         score.text = "SCORE: " + counter
         score.update()
-        myGameBall.update()
+        // myGameBall.update()
         myGamePiece.newPos()
         myGamePiece.update()
     }
