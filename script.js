@@ -57,7 +57,7 @@ document.addEventListener("DOMContentLoaded", () => {
         this.speedY = 0
         this.x = x
         this.y = y
-        this.gravity = 0.05
+        this.gravity = 0.1
         this.gravitySpeed = 0
         this.update = () => {
             ctx = myGameArea.context // this is the 2D rendering context, tool used to paint on canvas
@@ -75,6 +75,7 @@ document.addEventListener("DOMContentLoaded", () => {
         this.newPos = function() {
             this.gravitySpeed += this.gravity
             this.x += this.speedX
+
             this.y += this.speedY + this.gravitySpeed
             this.hitBottom()
         }
@@ -125,8 +126,12 @@ document.addEventListener("DOMContentLoaded", () => {
         myGamePiece.speedY = 0
         for (i = 0; i < myObstacles.length; i++) {
             if (myGamePiece.crashWith(myObstacles[i])) {
-                myGamePiece.speedY = -0.5
-            }
+                myGamePiece.gravitySpeed = 0
+                // myGamePiece.gravity = 0
+                // myGamePiece.speedY = -0.5
+                myGamePiece.y = myObstacles[i].y - myGamePiece.height
+                // myGamePiece.update()
+            } 
             if (myGamePiece.y > myObstacles[i].y) {
                 counter += 0.5
             }
@@ -135,7 +140,7 @@ document.addEventListener("DOMContentLoaded", () => {
             myGamePiece.speedX = -3
         }
         if (myGameArea.keys && myGameArea.keys[39]) {
-            myGamePiece.speedX = +3
+            myGamePiece.speedX = 3
         }
         for (i = 0; i < myObstacles.length; i++) {
             myObstacles[i].y += -0.5

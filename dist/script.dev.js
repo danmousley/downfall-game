@@ -55,7 +55,7 @@ document.addEventListener("DOMContentLoaded", function () {
     this.speedY = 0;
     this.x = x;
     this.y = y;
-    this.gravity = 0.05;
+    this.gravity = 0.1;
     this.gravitySpeed = 0;
 
     this.update = function () {
@@ -138,7 +138,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
     for (i = 0; i < myObstacles.length; i++) {
       if (myGamePiece.crashWith(myObstacles[i])) {
-        myGamePiece.speedY = -0.5;
+        myGamePiece.gravitySpeed = 0; // myGamePiece.gravity = 0
+        // myGamePiece.speedY = -0.5
+
+        myGamePiece.y = myObstacles[i].y - myGamePiece.height; // myGamePiece.update()
       }
 
       if (myGamePiece.y > myObstacles[i].y) {
@@ -152,7 +155,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     if (myGameArea.keys && myGameArea.keys[39]) {
-      myGamePiece.speedX = +3;
+      myGamePiece.speedX = 3;
     }
 
     for (i = 0; i < myObstacles.length; i++) {
