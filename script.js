@@ -96,9 +96,9 @@ document.addEventListener("DOMContentLoaded", () => {
             let otherright = otherobj.x + (otherobj.width)
             let othertop = otherobj.y
             let otherbottom = otherobj.y + (otherobj.height)
-            let crash = true
-            if ((mybottom < othertop) || (mytop > otherbottom) || (myleft > otherright) || (myright < otherleft)) {
-                crash = false
+            let crash = false // always true, unless there is no overlap
+            if ((mybottom > othertop) && (myright > otherleft) && (myleft < otherright) && (mytop < otherbottom)) { // || (mytop > otherbottom) || (myleft > otherright) || (myright < otherleft)
+                crash = true
             }
             return crash
         }
@@ -113,8 +113,8 @@ document.addEventListener("DOMContentLoaded", () => {
             let othertop = otherobj.y
             let otherbottom = otherobj.y + (otherobj.height)
             let touch = false
-            if ((myright > otherleft) && (mybottom > othertop) && (myleft < otherleft) && (mytop > otherbottom)) {
-                touchleft = true
+            if ((mybottom > othertop) && (myright > otherleft) && (myleft < (otherleft-myGamePiece.width+4)) && (mytop < otherbottom)) {
+                touch = true
             }
             return touch
         }
@@ -129,8 +129,8 @@ document.addEventListener("DOMContentLoaded", () => {
             let othertop = otherobj.y
             let otherbottom = otherobj.y + (otherobj.height)
             let touch = false
-            if ((myleft < otherright) && (mybottom > othertop) && (myright > otherright) && (mytop > otherbottom)) {
-                touchleft = true
+            if ((mybottom > othertop) && (myright-myGamePiece.width+4 > otherright) && (myleft < otherright) && (mytop < otherbottom)) {
+                touch = true
             }
             return touch
         }
@@ -157,11 +157,15 @@ document.addEventListener("DOMContentLoaded", () => {
         myGamePiece.speedX = 0 // reset speeds to zero, therefore object stops if button press stops
         myGamePiece.speedY = 0
         for (i = 0; i < myObstacles.length; i++) {
-            // if (myGamePiece.touchLeft(myObstacles[i])) {
-            //     myGamePiece.x = myObstacles[i]
-            if (myGamePiece.crashWith(myObstacles[i])) {
+            if (myGamePiece.touchLeft(myObstacles[i])) {
+                myGamePiece.speedX = 0
+                myGamePiece.x = myObstacles[i].x - myGamePiece.width
+            } else if (myGamePiece.touchRight(myObstacles[i])) {
+                console.log("true")
+                myGamePiece.speedX = 0
+                myGamePiece.x = myObstacles[i].x + myObstacles[i].width
+            } else if (myGamePiece.crashWith(myObstacles[i])) {
                 myGamePiece.gravitySpeed = 0
-                // myGamePiece.gravity = 0
                 // myGamePiece.speedY = -0.5
                 myGamePiece.y = myObstacles[i].y - myGamePiece.height
                 // myGamePiece.update()
