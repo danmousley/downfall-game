@@ -5,6 +5,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     var myGamePiece
+    var myGameBall
     var myObstacles = []
     var score
 
@@ -12,6 +13,7 @@ document.addEventListener("DOMContentLoaded", () => {
     function startGame() {
         myGameArea.start()
         myGamePiece = new component(30, 30, "red", 30, 30)
+        myGameBall = new component(30, 30, "green", 100, 30, "circle")
         score = new component("30px", "Consolas", "black", 280, 40, "text")
         // myObstacle = new component(250, 10, "green", 0, 250)
     }
@@ -49,7 +51,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     // class to define components
-    function component(width, height, color, x, y, type) {
+    function component(width, height, color, x, y, type) { //
         this.type = type
         this.width = width
         this.height = height
@@ -57,7 +59,7 @@ document.addEventListener("DOMContentLoaded", () => {
         this.speedY = 0
         this.x = x
         this.y = y
-        this.gravity = 0.1
+        this.gravity = 0.2
         this.gravitySpeed = 0
         this.update = () => {
             ctx = myGameArea.context // this is the 2D rendering context, tool used to paint on canvas
@@ -65,8 +67,11 @@ document.addEventListener("DOMContentLoaded", () => {
                 ctx.font = this.width + " " + this.height
                 ctx.fillStyle = color
                 ctx.fillText(this.text, this.x, this.y)
-            }
-            else {
+            } else if (this.type == "circle") {
+                ctx.arc(this.x+this.width/2, this.y+this.height/2, this.width/2, 0, Math.PI*2, false)
+                ctx.fillStyle = color
+                ctx.fill()
+            } else {
                 ctx.fillStyle = color
                 ctx.fillRect(this.x, this.y, this.width, this.height) // draws a rectangle filled with above style
             }
@@ -113,7 +118,7 @@ document.addEventListener("DOMContentLoaded", () => {
             let othertop = otherobj.y
             let otherbottom = otherobj.y + (otherobj.height)
             let touch = false
-            if ((mybottom > othertop) && (myright > otherleft) && (myleft < (otherleft-myGamePiece.width+4)) && (mytop < otherbottom)) {
+            if ((mybottom > othertop) && (myright > otherleft) && (myleft < (otherleft-myGamePiece.width+5)) && (mytop < otherbottom)) {
                 touch = true
             }
             return touch
@@ -129,7 +134,7 @@ document.addEventListener("DOMContentLoaded", () => {
             let othertop = otherobj.y
             let otherbottom = otherobj.y + (otherobj.height)
             let touch = false
-            if ((mybottom > othertop) && (myright-myGamePiece.width+4 > otherright) && (myleft < otherright) && (mytop < otherbottom)) {
+            if ((mybottom > othertop) && (myright-myGamePiece.width+5 > otherright) && (myleft < otherright) && (mytop < otherbottom)) {
                 touch = true
             }
             return touch
@@ -175,17 +180,18 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         }
         if (myGameArea.keys && myGameArea.keys[37]) { // update speeds according to key press
-            myGamePiece.speedX = -3
+            myGamePiece.speedX = -4
         }
         if (myGameArea.keys && myGameArea.keys[39]) {
-            myGamePiece.speedX = 3
+            myGamePiece.speedX = 4
         }
         for (i = 0; i < myObstacles.length; i++) {
-            myObstacles[i].y += -0.5
+            myObstacles[i].y += -1
             myObstacles[i].update()
         }
         score.text = "SCORE: " + counter
         score.update()
+        myGameBall.update()
         myGamePiece.newPos()
         myGamePiece.update()
     }

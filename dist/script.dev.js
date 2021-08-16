@@ -4,12 +4,14 @@ document.addEventListener("DOMContentLoaded", function () {
   // var canvas = document.getElementById("myCanvas")
   // var ctx = canvas.getContext("2d")
   var myGamePiece;
+  var myGameBall;
   var myObstacles = [];
   var score; // create canvas and game pieces
 
   function startGame() {
     myGameArea.start();
     myGamePiece = new component(30, 30, "red", 30, 30);
+    myGameBall = new component(30, 30, "green", 100, 30, "circle");
     score = new component("30px", "Consolas", "black", 280, 40, "text"); // myObstacle = new component(250, 10, "green", 0, 250)
   } //object to define the game area
 
@@ -48,6 +50,7 @@ document.addEventListener("DOMContentLoaded", function () {
   function component(width, height, color, x, y, type) {
     var _this = this;
 
+    //
     this.type = type;
     this.width = width;
     this.height = height;
@@ -55,7 +58,7 @@ document.addEventListener("DOMContentLoaded", function () {
     this.speedY = 0;
     this.x = x;
     this.y = y;
-    this.gravity = 0.1;
+    this.gravity = 0.2;
     this.gravitySpeed = 0;
 
     this.update = function () {
@@ -65,6 +68,10 @@ document.addEventListener("DOMContentLoaded", function () {
         ctx.font = _this.width + " " + _this.height;
         ctx.fillStyle = color;
         ctx.fillText(_this.text, _this.x, _this.y);
+      } else if (_this.type == "circle") {
+        ctx.arc(_this.x + _this.width / 2, _this.y + _this.height / 2, _this.width / 2, 0, Math.PI * 2, false);
+        ctx.fillStyle = color;
+        ctx.fill();
       } else {
         ctx.fillStyle = color;
         ctx.fillRect(_this.x, _this.y, _this.width, _this.height); // draws a rectangle filled with above style
@@ -118,7 +125,7 @@ document.addEventListener("DOMContentLoaded", function () {
       var otherbottom = otherobj.y + otherobj.height;
       var touch = false;
 
-      if (mybottom > othertop && myright > otherleft && myleft < otherleft - myGamePiece.width + 4 && mytop < otherbottom) {
+      if (mybottom > othertop && myright > otherleft && myleft < otherleft - myGamePiece.width + 5 && mytop < otherbottom) {
         touch = true;
       }
 
@@ -136,7 +143,7 @@ document.addEventListener("DOMContentLoaded", function () {
       var otherbottom = otherobj.y + otherobj.height;
       var touch = false;
 
-      if (mybottom > othertop && myright - myGamePiece.width + 4 > otherright && myleft < otherright && mytop < otherbottom) {
+      if (mybottom > othertop && myright - myGamePiece.width + 5 > otherright && myleft < otherright && mytop < otherbottom) {
         touch = true;
       }
 
@@ -194,20 +201,21 @@ document.addEventListener("DOMContentLoaded", function () {
 
     if (myGameArea.keys && myGameArea.keys[37]) {
       // update speeds according to key press
-      myGamePiece.speedX = -3;
+      myGamePiece.speedX = -4;
     }
 
     if (myGameArea.keys && myGameArea.keys[39]) {
-      myGamePiece.speedX = 3;
+      myGamePiece.speedX = 4;
     }
 
     for (i = 0; i < myObstacles.length; i++) {
-      myObstacles[i].y += -0.5;
+      myObstacles[i].y += -1;
       myObstacles[i].update();
     }
 
     score.text = "SCORE: " + counter;
     score.update();
+    myGameBall.update();
     myGamePiece.newPos();
     myGamePiece.update();
   } // allow buttons to control motion
