@@ -3,12 +3,12 @@
 document.addEventListener("DOMContentLoaded", function () {
   // var canvas = document.getElementById("myCanvas")
   // var ctx = canvas.getContext("2d")
-  var myGamePiece; // create canvas and game pieces
+  var myGamePiece;
+  var myObstacles = []; // create canvas and game pieces
 
   function startGame() {
     myGameArea.start();
-    myGamePiece = new component(30, 30, "red", 30, 30);
-    myObstacle = new component(10, 400, "green", 300, 0);
+    myGamePiece = new component(30, 30, "red", 30, 30); // myObstacle = new component(250, 10, "green", 0, 250)
   } //object to define the game area
 
 
@@ -20,7 +20,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
       this.context = this.canvas.getContext("2d"); // insert the canvas as the first item in the body
 
-      document.body.insertBefore(this.canvas, document.body.childNodes[0]); // update game area 50 times per second (every 20th millisecond)
+      document.body.insertBefore(this.canvas, document.body.childNodes[0]);
+      this.frameNo = 0; // update game area 50 times per second (every 20th millisecond)
 
       this.interval = setInterval(updateGameArea, 20); // create key with keycode as variable if keyboard pressed
 
@@ -87,32 +88,38 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
   function updateGameArea() {
+    var x, y;
     myGameArea.clear();
-    myObstacle.x += -1;
-    myObstacle.update();
+    myGameArea.frameNo += 1;
 
-    if (myGamePiece.crashWith(myObstacle)) {
-      myGamePiece.speedX = -1; // reset speeds to zero, therefore object stops if button press stops
+    if (myGameArea.frameNo == 1 || everyInterval(150)) {
+      x = myGameArea.canvas.width - 200;
+      y = myGameArea.canvas.height;
+      myObstacles.push(new component(250, 10, "green", x, y));
+    }
 
-      myGamePiece.speedY = 0;
+    myGamePiece.speedX = 0; // reset speeds to zero, therefore object stops if button press stops
 
-      if (myGameArea.keys && myGameArea.keys[37]) {
-        // update speeds according to key press
-        myGamePiece.speedX = -1;
+    myGamePiece.speedY = 0;
+
+    for (i = 0; i < myObstacles.length; i++) {
+      if (myGamePiece.crashWith(myObstacles[i])) {
+        myGamePiece.speedY = -0.5;
       }
-    } else {
-      myGamePiece.speedX = 0; // reset speeds to zero, therefore object stops if button press stops
+    }
 
-      myGamePiece.speedY = 0;
+    if (myGameArea.keys && myGameArea.keys[37]) {
+      // update speeds according to key press
+      myGamePiece.speedX = -1;
+    }
 
-      if (myGameArea.keys && myGameArea.keys[37]) {
-        // update speeds according to key press
-        myGamePiece.speedX = -1;
-      }
+    if (myGameArea.keys && myGameArea.keys[39]) {
+      myGamePiece.speedX = +1;
+    }
 
-      if (myGameArea.keys && myGameArea.keys[39]) {
-        myGamePiece.speedX = +1;
-      }
+    for (i = 0; i < myObstacles.length; i++) {
+      myObstacles[i].y += -0.5;
+      myObstacles[i].update();
     }
 
     myGamePiece.newPos();
@@ -146,6 +153,15 @@ document.addEventListener("DOMContentLoaded", function () {
   });
   right.addEventListener("mouseup", function () {
     stopMove();
-  });
+  }); // function to return true every time the interval is met
+
+  function everyInterval(n) {
+    if (myGameArea.frameNo / n % 1 == 0) {
+      return true;
+    }
+
+    return false;
+  }
+
   startGame();
 });
