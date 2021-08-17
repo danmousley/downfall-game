@@ -11,12 +11,18 @@ document.addEventListener("DOMContentLoaded", () => {
     let gravity = 1
     let ballSpeed = 8
     const vh = Math.max(document.documentElement.clientHeight || 0, window.innerHeight || 0)
-    let highScore
-    let title
+    let highScore = 0
+    let gameTitle
     let highestScore
+    let info
+    let isMenuScreen
 
     // create canvas and game pieces
     function startGame() {
+        document.querySelector("#game-canvas").classList.remove("dark")
+        document.querySelector(".side--right").classList.add("dark")
+        document.querySelector(".side--left").classList.add("dark")
+        isMenuScreen = false
         myGamePiece = new component(30, 30, "#FFFF00", 30, 30, "circle")
         score = new component("20px", "Consolas", "white", 360, 40, "text")
         backgroundMusic = new sound("music/game-music.mp3")
@@ -27,13 +33,15 @@ document.addEventListener("DOMContentLoaded", () => {
         myGameArea.start()
     }
 
-    // function menuScreen() {
-    //     menuMusic = new sound("music/start-screen.mp3")
-    //     menuMusic.play()
-    //     myMenu.start()
-    //     title = new component("20px", "Consolas", "white", 360, 40, "text")
-    //     highestScore = new component("20px", "Consolas", "white", 360, 40, "text")
-    // }
+    function menuScreen() {
+        isMenuScreen = true
+        menuMusic = new sound("music/start-screen.mp3")
+        menuMusic.play()
+        gameTitle = new component("60px", "Warnes", "white", 65, 170, "text")
+        highestScore = new component("20px", "Consolas", "white", 150, 220, "text")
+        info = new component("20px", "Consolas", "white", 120, 370, "text")
+        myMenu.start()
+    }
 
     function sound(src) {
         this.sound = document.createElement("audio");
@@ -50,32 +58,29 @@ document.addEventListener("DOMContentLoaded", () => {
         }
       }
 
-    // let myMenu = {
-    //     canvas : document.querySelector("#game-canvas"),
-    //     start: function() {
-    //         this.canvas.width = 480
-    //         this.canvas.height = 0.8 * vh
-    //         this.context = this.canvas.getContext("2d") // sets context type of 2d
-    //         this.frameNo = 0
-    //         this.interval = setInterval(updateMenu, 20) // update game area 50 times per second (every 20th millisecond)
+    let myMenu = {
+        canvas : document.querySelector("#game-canvas"),
+        start: function() {
+            this.canvas.width = 480
+            this.canvas.height = 0.8 * vh
+            this.context = this.canvas.getContext("2d") // sets context type of 2d
+            this.frameNo = 0
+            this.interval = setInterval(updateMenu, 20) // update game area 50 times per second (every 20th millisecond)
 
-    //         // create key with keycode as variable if keyboard pressed
-    //         window.addEventListener('keydown', function(e) {
-    //             myMenu.keys = (myMenu.keys || []) //create empty array if no keys pressed
-    //             myMenu.keys[e.keyCode] = true //add keycodes to the array when respective key pressed
-    //         })
-    //         window.addEventListener('keyup', function(e) {
-    //             myMenu.keys[e.keyCode] = false
-    //         })
-    //     },
-    //     // function to clear canvas
-    //     clear: function() {
-    //         this.context.clearRect(0, 0, this.canvas.width, this.canvas.height)
-    //     },
-    //     stop: function() {
-    //         clearInterval(this.interval) //clears the timer set with setInterval() method above
-    //     }
-    // }
+            // create key with keycode as variable if keyboard pressed
+            window.addEventListener('keydown', function(e) {
+                myMenu.keys = true //create empty array if no keys pressed
+                // myMenu.keys[e.keyCode] = true //add keycodes to the array when respective key pressed
+            })
+        },
+        // function to clear canvas
+        clear: function() {
+            this.context.clearRect(0, 0, this.canvas.width, this.canvas.height)
+        },
+        stop: function() {
+            clearInterval(this.interval) //clears the timer set with setInterval() method above
+        }
+    }
 
     //object to define the gameplay area
     let myGameArea = {
@@ -117,7 +122,7 @@ document.addEventListener("DOMContentLoaded", () => {
         this.gravity = gravity
         this.gravitySpeed = 0
         this.update = () => {
-            ctx = myGameArea.context // this is the 2D rendering context, tool used to paint on canvas
+            ctx = isMenuScreen ? myMenu.context : myGameArea.context // this is the 2D rendering context, tool used to paint on canvas
             if (this.type == "text") {
                 ctx.font = this.width + " " + this.height
                 ctx.fillStyle = color
@@ -215,26 +220,46 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
-    // function updateMenu() {
-    //     myMenu.clear()
-    //     myMenu.frameNo += 1
-    //     if (myMenu.frameNo == 1 || everyInterval(interval)) {
-    //         y = myMenu.canvas.height // bottom of the screen
-    //         x = myMenu.canvas.width
-    //         minWidth = 20
-    //         maxWidth = 450 // min width + max width still allows object to go through the gap
-    //         width = Math.floor(Math.random()*(maxWidth-minWidth+1)+minWidth) // randomly generated width in the range
-    //         minGap = 50
-    //         maxGap = 150
-    //         levelcolor = 
-    //         gap = Math.floor(Math.random()*(maxGap-minGap+1)+minGap) // randomly generated gap in the range
-    //         myObstacles.push(new component(width, 10, levelColor, 0, y)) // create obstacle of height 10 and randomly generated width in the bottom left
-    //         myObstacles.push(new component(x-width-gap, 10, levelColor, width+gap, y)) // create corresponding obstacle width equal to width of screen-width object1 - width gap
-    //     title.text = "Down Fall"
-    //     highestScore.text = highScore
-    //     title.update()
-    //     highestScore.update()
-    // }
+    function updateMenu() {
+        myMenu.clear()
+        myMenu.frameNo += 1
+        if (myMenu.frameNo == 1 || everyInterval(80)) {
+            y = myMenu.canvas.height // bottom of the screen
+            x = myMenu.canvas.width
+            minWidth = 20
+            maxWidth = 450 // min width + max width still allows object to go through the gap
+            width = Math.floor(Math.random()*(maxWidth-minWidth+1)+minWidth) // randomly generated width in the range
+            minGap = 50
+            maxGap = 150
+            gap = Math.floor(Math.random()*(maxGap-minGap+1)+minGap) // randomly generated gap in the range
+            myObstacles.push(new component(width, 10, "#394752b7", 0, y)) // create obstacle of height 10 and randomly generated width in the bottom left
+            myObstacles.push(new component(x-width-gap, 10, "#394752b7", width+gap, y)) // create corresponding obstacle width equal to width of screen-width object1 - width gap
+        }
+        for (i = 0; i < myObstacles.length; i++) {
+            myObstacles[i].y += -1.5
+            myObstacles[i].update()
+        }
+        if (myMenu.keys) { // press any key to start game
+            console.log("keys work")
+            myMenu.stop()
+            myMenu.clear()
+            menuMusic.stop()
+            startGame()
+        }
+        gameTitle.text = "Down Fall"
+        highestScore.text = "High score: "
+        info.text = "Press any key to start"
+        if (myMenu.frameNo == 1 || everyInterval(80)) {
+            if (info.text = " ") {
+                info.text = "Press any key to start"
+            } else if (info.text = "Press any key to start") {
+                info.text == " "
+            }
+        }
+        gameTitle.update()
+        highestScore.update()
+        info.update()
+    }
 
     // function to clear and draw the game area
     function updateGameArea() {
@@ -277,7 +302,6 @@ document.addEventListener("DOMContentLoaded", () => {
             width = Math.floor(Math.random()*(maxWidth-minWidth+1)+minWidth) // randomly generated width in the range
             minGap = 50
             maxGap = 150
-            levelcolor = 
             gap = Math.floor(Math.random()*(maxGap-minGap+1)+minGap) // randomly generated gap in the range
             myObstacles.push(new component(width, 10, levelColor, 0, y)) // create obstacle of height 10 and randomly generated width in the bottom left
             myObstacles.push(new component(x-width-gap, 10, levelColor, width+gap, y)) // create corresponding obstacle width equal to width of screen-width object1 - width gap
@@ -298,6 +322,9 @@ document.addEventListener("DOMContentLoaded", () => {
             if (myGamePiece.y > myObstacles[i].y) {
                 counter += 0.5
             }
+            if (counter > highScore) {
+                highScore = counter
+            }
         }
         if (myGameArea.keys && myGameArea.keys[37]) { // update speeds according to key press
             myGamePiece.speedX = -ballSpeed
@@ -314,6 +341,10 @@ document.addEventListener("DOMContentLoaded", () => {
             backgroundMusic.stop()
             gameOver.play()
             myGameArea.stop()
+            document.querySelector("#game-canvas").classList.add("dark")
+            document.querySelector(".side--right").classList.remove("dark")
+            document.querySelector(".side--left").classList.remove("dark")
+
         }
         if (counter != 0 && counter % 10 == 0) {
             levelUp.play()
@@ -326,12 +357,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // function to return true every time the interval is met
     function everyInterval(n) {
-        if ((myGameArea.frameNo / n) % 1 == 0) {
+        if ((myGameArea.frameNo / n) % 1 == 0 || (myMenu.frameNo / n) % 1 == 0) {
             return true
         }
         return false
     }
 
-    startGame()
+    menuScreen()
 
 })
