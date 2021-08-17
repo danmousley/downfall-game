@@ -1,5 +1,106 @@
+@import url('https://fonts.googleapis.com/css2?family=Warnes&display=swap');
+
+$color-neon1-light: #5697ff;
+$color-neon1-dark: #0062ff;
+$color-neon2: #CC00FF;
+
+.glow2, .glow1 {
+    font-size: 80px;
+    color: #fff;
+    text-align: center;
+    -webkit-animation: glow 1s ease-in-out infinite alternate;
+    -moz-animation: glow 1s ease-in-out infinite alternate;
+    animation: glow 1s ease-in-out infinite alternate;
+  }
+  
+  @-webkit-keyframes glow {
+    from {
+      text-shadow: 0 0 10px #fff, 0 0 20px #fff, 0 0 30px $color-neon1-dark, 0 0 40px $color-neon1-dark, 0 0 50px $color-neon1-dark, 0 0 60px $color-neon1-dark, 0 0 70px $color-neon1-dark;
+    }
+    to {
+      text-shadow: 0 0 20px #fff, 0 0 30px $color-neon1-light, 0 0 40px $color-neon1-light, 0 0 50px $color-neon1-light, 0 0 60px $color-neon1-light, 0 0 70px $color-neon1-light, 0 0 80px $color-neon1-light;
+    }
+  }
+
+  @-webkit-keyframes glow {
+    from {
+      text-shadow: 0 0 10px #fff, 0 0 20px #fff, 0 0 30px #e60073, 0 0 40px #e60073, 0 0 50px #e60073, 0 0 60px #e60073, 0 0 70px #e60073;
+    }
+    to {
+      text-shadow: 0 0 20px #fff, 0 0 30px #ff4da6, 0 0 40px #ff4da6, 0 0 50px #ff4da6, 0 0 60px #ff4da6, 0 0 70px #ff4da6, 0 0 80px #ff4da6;
+    }
+  }
+
+body {
+    background-image: url("images/brick-wall.jpg");
+    background-color: #cccccc;
+    display: flex;
+    justify-content: space-evenly;
+}
+
+.side {
+    color: white;
+    font-size: 70px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+
+    span {
+        font-family: 'Warnes', cursive;
+    }
+}
+
 canvas {
-    background: #eee;
+    background: #14181bb7;
     display: block;
     margin: 0 auto;
+}
+
+.dark {
+    filter: brightness(50%);
+}
+
+.phone {
+    display: grid;
+    margin-top: 1%;
+    grid-template-areas:
+    'top top top'
+    'left display right'
+    'bottom bottom bottom';
+    grid-gap: 0px;
+    background-color: #0f0f0f;
+    width: auto;
+    overflow: hidden;
+    border-radius: 5%;
+
+    &__top {
+        grid-area: top;
+        height: 8vh;
+        border-top-right-radius: 50px;
+        border-top-left-radius: 20%;
+        border-radius: 20%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+    &__left {
+        grid-area: left;
+        width: 2vh;
+    }
+    &__right {
+        grid-area: right;
+        width: 2vh;
+        border-bottom-right-radius: 20%;
+    }
+    &__bottom {
+        grid-area: bottom;
+        height: 7vh;
+    }
+    &__display {grid-area: display;}
+
+.camera-lense {
+    height: 25%;
+    width: auto;
+}
+
 }
