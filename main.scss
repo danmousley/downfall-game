@@ -12,15 +12,6 @@ $color-neon2: #CC00FF;
     -moz-animation: glow 1s ease-in-out infinite alternate;
     animation: glow 1s ease-in-out infinite alternate;
   }
-  
-  @-webkit-keyframes glow {
-    from {
-      text-shadow: 0 0 10px #fff, 0 0 20px #fff, 0 0 30px $color-neon1-dark, 0 0 40px $color-neon1-dark, 0 0 50px $color-neon1-dark, 0 0 60px $color-neon1-dark, 0 0 70px $color-neon1-dark;
-    }
-    to {
-      text-shadow: 0 0 20px #fff, 0 0 30px $color-neon1-light, 0 0 40px $color-neon1-light, 0 0 50px $color-neon1-light, 0 0 60px $color-neon1-light, 0 0 70px $color-neon1-light, 0 0 80px $color-neon1-light;
-    }
-  }
 
   @-webkit-keyframes glow {
     from {
@@ -54,6 +45,7 @@ canvas {
     background: #14181bb7;
     display: block;
     margin: 0 auto;
+    border: 0.5px solid black;
 }
 
 .dark {

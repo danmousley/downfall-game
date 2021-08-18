@@ -10,14 +10,6 @@
 
 @-webkit-keyframes glow {
   from {
-    text-shadow: 0 0 10px #fff, 0 0 20px #fff, 0 0 30px #0062ff, 0 0 40px #0062ff, 0 0 50px #0062ff, 0 0 60px #0062ff, 0 0 70px #0062ff;
-  }
-  to {
-    text-shadow: 0 0 20px #fff, 0 0 30px #5697ff, 0 0 40px #5697ff, 0 0 50px #5697ff, 0 0 60px #5697ff, 0 0 70px #5697ff, 0 0 80px #5697ff;
-  }
-}
-@-webkit-keyframes glow {
-  from {
     text-shadow: 0 0 10px #fff, 0 0 20px #fff, 0 0 30px #e60073, 0 0 40px #e60073, 0 0 50px #e60073, 0 0 60px #e60073, 0 0 70px #e60073;
   }
   to {
@@ -46,6 +38,7 @@ canvas {
   background: #14181bb7;
   display: block;
   margin: 0 auto;
+  border: 0.5px solid black;
 }
 
 .dark {

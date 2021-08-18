@@ -1,4 +1,3 @@
-
 document.addEventListener("DOMContentLoaded", () => {
 
     let myGamePiece
@@ -32,7 +31,6 @@ document.addEventListener("DOMContentLoaded", () => {
         backgroundMusic = new sound("music/game-music.mp3")
         levelUp = new sound("music/level-up.mp3")
         gameOver = new sound("music/game-over.mp3")
-        // menuMusic.stop()
         backgroundMusic.play()
         myGameArea.start()
     }
@@ -74,8 +72,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
             // create key with keycode as variable if keyboard pressed
             window.addEventListener('keydown', function(e) {
-                myMenu.keys = true //create empty array if no keys pressed
-                // myMenu.keys[e.keyCode] = true //add keycodes to the array when respective key pressed
+                myMenu.keys = true 
             })
             window.addEventListener('keyup', function(e) {
                 myMenu.keys = false
@@ -289,7 +286,7 @@ document.addEventListener("DOMContentLoaded", () => {
             if (myGameArea.score > highScore) {
                 highScore = myGameArea.score
             }
-            info.text = "Press any key to continue to continue"
+            info.text = "Press any key to continue"
             gameTitle.update()
             highestScore.update()
             info.update()
@@ -301,12 +298,9 @@ document.addEventListener("DOMContentLoaded", () => {
             document.querySelector(".side--right").classList.remove("dark")
             document.querySelector(".side--left").classList.remove("dark")
             window.addEventListener('keyup', function(e) {
-                // e.stopImmediatePropagation()
-                // e.preventDefault()
                 if (isGameOver == true) {
                     myGameArea.clear()
                     myGameArea.stop()
-                    // myMenu.keys = false
                     menuScreen()
                 }
             })
