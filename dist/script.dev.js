@@ -15,7 +15,8 @@ document.addEventListener("DOMContentLoaded", function () {
   var gameTitle;
   var highestScore;
   var info;
-  var isMenuScreen; // create canvas and game pieces
+  var isMenuScreen;
+  var isGameOver; // create canvas and game pieces
 
   function startGame() {
     document.querySelector("#game-canvas").classList.remove("dark");
@@ -24,6 +25,9 @@ document.addEventListener("DOMContentLoaded", function () {
     isMenuScreen = false;
     myGamePiece = new component(30, 30, "#FFFF00", 30, 30, "circle");
     score = new component("20px", "Consolas", "white", 360, 40, "text");
+    gameTitle = new component("60px", "Warnes", "white", 50, 170, "text");
+    highestScore = new component("20px", "Consolas", "white", 150, 220, "text");
+    info = new component("20px", "Consolas", "white", 100, 0.6 * vh, "text");
     backgroundMusic = new sound("music/game-music.mp3");
     levelUp = new sound("music/level-up.mp3");
     gameOver = new sound("music/game-over.mp3"); // menuMusic.stop()
@@ -33,12 +37,13 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   function menuScreen() {
+    isGameOver = false;
     isMenuScreen = true;
     menuMusic = new sound("music/start-screen.mp3");
     menuMusic.play();
-    gameTitle = new component("60px", "Warnes", "white", 65, 170, "text");
-    highestScore = new component("20px", "Consolas", "white", 150, 220, "text");
-    info = new component("20px", "Consolas", "white", 120, 370, "text");
+    gameTitle = new component("60px", "Warnes", "white", 65, 0.25 * vh, "text");
+    highestScore = new component("20px", "Consolas", "white", 170, 0.35 * vh, "text");
+    info = new component("20px", "Consolas", "white", 120, 0.6 * vh, "text");
     myMenu.start();
   }
 
@@ -74,6 +79,9 @@ document.addEventListener("DOMContentLoaded", function () {
         myMenu.keys = true; //create empty array if no keys pressed
         // myMenu.keys[e.keyCode] = true //add keycodes to the array when respective key pressed
       });
+      window.addEventListener('keyup', function (e) {
+        myMenu.keys = false;
+      });
     },
     // function to clear canvas
     clear: function clear() {
@@ -92,6 +100,7 @@ document.addEventListener("DOMContentLoaded", function () {
       this.context = this.canvas.getContext("2d"); // sets context type of 2d
 
       this.frameNo = 0;
+      this.score = 0;
       this.interval = setInterval(updateGameArea, 20); // update game area 50 times per second (every 20th millisecond)
       // create key with keycode as variable if keyboard pressed
 
@@ -237,170 +246,198 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   function updateMenu() {
-    myMenu.clear();
-    myMenu.frameNo += 1;
-
-    if (myMenu.frameNo == 1 || everyInterval(80)) {
-      y = myMenu.canvas.height; // bottom of the screen
-
-      x = myMenu.canvas.width;
-      minWidth = 20;
-      maxWidth = 450; // min width + max width still allows object to go through the gap
-
-      width = Math.floor(Math.random() * (maxWidth - minWidth + 1) + minWidth); // randomly generated width in the range
-
-      minGap = 50;
-      maxGap = 150;
-      gap = Math.floor(Math.random() * (maxGap - minGap + 1) + minGap); // randomly generated gap in the range
-
-      myObstacles.push(new component(width, 10, "#394752b7", 0, y)); // create obstacle of height 10 and randomly generated width in the bottom left
-
-      myObstacles.push(new component(x - width - gap, 10, "#394752b7", width + gap, y)); // create corresponding obstacle width equal to width of screen-width object1 - width gap
-    }
-
-    for (i = 0; i < myObstacles.length; i++) {
-      myObstacles[i].y += -1.5;
-      myObstacles[i].update();
-    }
-
-    if (myMenu.keys) {
+    if (myMenu.keys && isMenuScreen) {
       // press any key to start game
       console.log("keys work");
+      myMenu.clear();
+      myObstacles = [];
       myMenu.stop();
       myMenu.clear();
       menuMusic.stop();
       startGame();
-    }
+    } else {
+      myMenu.clear();
+      myMenu.frameNo += 1;
 
-    gameTitle.text = "Down Fall";
-    highestScore.text = "High score: ";
-    info.text = "Press any key to start";
+      if (myMenu.frameNo == 1 || everyInterval(80)) {
+        y = myMenu.canvas.height; // bottom of the screen
 
-    if (myMenu.frameNo == 1 || everyInterval(80)) {
-      if (info.text = " ") {
-        info.text = "Press any key to start";
-      } else if (info.text = "Press any key to start") {
-        info.text == " ";
+        x = myMenu.canvas.width;
+        minWidth = 20;
+        maxWidth = 450; // min width + max width still allows object to go through the gap
+
+        width = Math.floor(Math.random() * (maxWidth - minWidth + 1) + minWidth); // randomly generated width in the range
+
+        minGap = 50;
+        maxGap = 150;
+        gap = Math.floor(Math.random() * (maxGap - minGap + 1) + minGap); // randomly generated gap in the range
+
+        myObstacles.push(new component(width, 10, "#394752b7", 0, y)); // create obstacle of height 10 and randomly generated width in the bottom left
+
+        myObstacles.push(new component(x - width - gap, 10, "#394752b7", width + gap, y)); // create corresponding obstacle width equal to width of screen-width object1 - width gap
       }
-    }
 
-    gameTitle.update();
-    highestScore.update();
-    info.update();
+      for (i = 0; i < myObstacles.length; i++) {
+        myObstacles[i].y += -1.5;
+        myObstacles[i].update();
+      }
+
+      gameTitle.text = "Down Fall";
+      highestScore.text = "High score: ".concat(highScore);
+      info.text = "Press any key to start";
+
+      if (myMenu.frameNo == 1 || everyInterval(80)) {
+        if (info.text = " ") {
+          info.text = "Press any key to start";
+        } else if (info.text = "Press any key to start") {
+          info.text == " ";
+        }
+      }
+
+      gameTitle.update();
+      highestScore.update();
+      info.update();
+    }
   } // function to clear and draw the game area
 
 
   function updateGameArea() {
+    // function to end game
     var y, width, gap, minWidth, maxWidth, minGap, maxGap;
-    var counter = 0;
     var interval, levelColor, levelSpeed;
+    var counter = 0;
 
-    if (counter > 49.0) {
-      interval = 20;
-      levelColor = "00207F";
-      levelSpeed = -6;
-    } else if (counter > 39.0) {
-      interval = 25;
-      levelColor = "#02B8A2";
-      levelSpeed = -5;
-    } else if (counter > 29.0) {
-      interval = 30;
-      levelColor = "#13CA91";
-      levelSpeed = -4;
-    } else if (counter > 19.0) {
-      interval = 40;
-      levelColor = "#01FFD";
-      levelSpeed = -3;
-    } else if (counter > 9.0) {
-      console.log("true");
-      interval = 60;
-      levelColor = "#FE53BB";
-      levelSpeed = -2;
-    } else {
-      //1.5 80
-      interval = 80;
-      levelColor = "#09FBD3";
-      levelSpeed = -1.5;
-    }
-
-    myGameArea.clear();
-    myGameArea.frameNo += 1;
-
-    if (myGameArea.frameNo == 1 || everyInterval(interval)) {
-      y = myGameArea.canvas.height; // bottom of the screen
-
-      x = myGameArea.canvas.width;
-      minWidth = 20;
-      maxWidth = 450; // min width + max width still allows object to go through the gap
-
-      width = Math.floor(Math.random() * (maxWidth - minWidth + 1) + minWidth); // randomly generated width in the range
-
-      minGap = 50;
-      maxGap = 150;
-      gap = Math.floor(Math.random() * (maxGap - minGap + 1) + minGap); // randomly generated gap in the range
-
-      myObstacles.push(new component(width, 10, levelColor, 0, y)); // create obstacle of height 10 and randomly generated width in the bottom left
-
-      myObstacles.push(new component(x - width - gap, 10, levelColor, width + gap, y)); // create corresponding obstacle width equal to width of screen-width object1 - width gap
-    }
-
-    myGamePiece.speedX = 0; // reset speeds to zero, therefore object stops if button press stops
-
-    myGamePiece.speedY = 0;
-
-    for (i = 0; i < myObstacles.length; i++) {
-      if (myGamePiece.touchLeft(myObstacles[i])) {
-        myGamePiece.speedX = 0;
-        myGamePiece.x = myObstacles[i].x - myGamePiece.width;
-      } else if (myGamePiece.touchRight(myObstacles[i])) {
-        myGamePiece.speedX = 0;
-        myGamePiece.x = myObstacles[i].x + myObstacles[i].width;
-      } else if (myGamePiece.crashWith(myObstacles[i])) {
-        myGamePiece.gravitySpeed = 0;
-        myGamePiece.y = myObstacles[i].y - myGamePiece.height;
-      }
-
-      if (myGamePiece.y > myObstacles[i].y) {
-        counter += 0.5;
-      }
-
-      if (counter > highScore) {
-        highScore = counter;
-      }
-    }
-
-    if (myGameArea.keys && myGameArea.keys[37]) {
-      // update speeds according to key press
-      myGamePiece.speedX = -ballSpeed;
-    }
-
-    if (myGameArea.keys && myGameArea.keys[39]) {
-      myGamePiece.speedX = ballSpeed;
-    }
-
-    for (i = 0; i < myObstacles.length; i++) {
-      myObstacles[i].y += levelSpeed;
-      myObstacles[i].update();
-    } // function to end game
-
-
-    if (myGamePiece.y < 0) {
+    if (myGamePiece.y && myGamePiece.y < 0) {
+      isGameOver = true;
       backgroundMusic.stop();
       gameOver.play();
+      myGameArea.clear();
+      gameTitle.text = "Game Over";
+      highestScore.text = "SCORE: " + myGameArea.score;
+
+      if (myGameArea.score > highScore) {
+        highScore = myGameArea.score;
+      }
+
+      info.text = "Press any key to continue to continue";
+      gameTitle.update();
+      highestScore.update();
+      info.update();
+      myGamePiece.newPos();
+      myGamePiece.y = 1;
+      myGamePiece.update();
       myGameArea.stop();
       document.querySelector("#game-canvas").classList.add("dark");
       document.querySelector(".side--right").classList.remove("dark");
       document.querySelector(".side--left").classList.remove("dark");
-    }
+      window.addEventListener('keyup', function (e) {
+        // e.stopImmediatePropagation()
+        // e.preventDefault()
+        if (isGameOver == true) {
+          myGameArea.clear();
+          myGameArea.stop(); // myMenu.keys = false
 
-    if (counter != 0 && counter % 10 == 0) {
-      levelUp.play();
-    }
+          menuScreen();
+        }
+      });
+    } else {
+      if (myGameArea.score > 49.0) {
+        interval = 20;
+        levelColor = "#FC6E22";
+        levelSpeed = -6;
+      } else if (myGameArea.score > 39.0) {
+        interval = 25;
+        levelColor = "#02B8A2";
+        levelSpeed = -5;
+      } else if (myGameArea.score > 29.0) {
+        interval = 30;
+        levelColor = "#0310EA";
+        levelSpeed = -4;
+      } else if (myGameArea.score > 19.0) {
+        interval = 40;
+        levelColor = "#FD1C03";
+        levelSpeed = -3;
+      } else if (myGameArea.score > 9.0) {
+        console.log("true");
+        interval = 60;
+        levelColor = "#FE53BB";
+        levelSpeed = -2;
+      } else {
+        //1.5 80
+        interval = 80;
+        levelColor = "#09FBD3";
+        levelSpeed = -1.5;
+      }
 
-    score.text = "SCORE: " + counter;
-    score.update();
-    myGamePiece.newPos();
-    myGamePiece.update();
+      myGameArea.clear();
+      myGameArea.frameNo += 1;
+
+      if (myGameArea.frameNo == 1 || everyInterval(interval)) {
+        y = myGameArea.canvas.height; // bottom of the screen
+
+        x = myGameArea.canvas.width;
+        minWidth = 20;
+        maxWidth = 450; // min width + max width still allows object to go through the gap
+
+        width = Math.floor(Math.random() * (maxWidth - minWidth + 1) + minWidth); // randomly generated width in the range
+
+        minGap = 50;
+        maxGap = 150;
+        gap = Math.floor(Math.random() * (maxGap - minGap + 1) + minGap); // randomly generated gap in the range
+
+        myObstacles.push(new component(width, 10, levelColor, 0, y)); // create obstacle of height 10 and randomly generated width in the bottom left
+
+        myObstacles.push(new component(x - width - gap, 10, levelColor, width + gap, y)); // create corresponding obstacle width equal to width of screen-width object1 - width gap
+      }
+
+      myGamePiece.speedX = 0; // reset speeds to zero, therefore object stops if button press stops
+
+      myGamePiece.speedY = 0;
+
+      for (i = 0; i < myObstacles.length; i++) {
+        if (myGamePiece.touchLeft(myObstacles[i])) {
+          myGamePiece.speedX = 0;
+          myGamePiece.x = myObstacles[i].x - myGamePiece.width;
+        } else if (myGamePiece.touchRight(myObstacles[i])) {
+          myGamePiece.speedX = 0;
+          myGamePiece.x = myObstacles[i].x + myObstacles[i].width;
+        } else if (myGamePiece.crashWith(myObstacles[i])) {
+          myGamePiece.gravitySpeed = 0;
+          myGamePiece.y = myObstacles[i].y - myGamePiece.height;
+        }
+
+        if (myGamePiece.y > myObstacles[i].y) {
+          counter += 0.5;
+        }
+
+        if (counter > myGameArea.score) {
+          myGameArea.score = counter;
+        }
+      }
+
+      if (myGameArea.keys && myGameArea.keys[37]) {
+        // update speeds according to key press
+        myGamePiece.speedX = -ballSpeed;
+      }
+
+      if (myGameArea.keys && myGameArea.keys[39]) {
+        myGamePiece.speedX = ballSpeed;
+      }
+
+      for (i = 0; i < myObstacles.length; i++) {
+        myObstacles[i].y += levelSpeed;
+        myObstacles[i].update();
+      }
+
+      if (myGameArea.score != 0 && myGameArea.score % 10 == 0) {
+        levelUp.play();
+      }
+
+      score.text = "SCORE: " + myGameArea.score;
+      score.update();
+      myGamePiece.newPos();
+      myGamePiece.update();
+    }
   } // function to return true every time the interval is met
 
 

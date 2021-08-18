@@ -33,7 +33,7 @@ body {
 
 .side {
   color: white;
-  font-size: 70px;
+  font-size: 90px;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -50,6 +50,10 @@ canvas {
 
 .dark {
   filter: brightness(50%);
+}
+
+.bw {
+  filter: grayscale(100%);
 }
 
 .phone {
