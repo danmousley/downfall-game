@@ -16,6 +16,8 @@ document.addEventListener("DOMContentLoaded", () => {
     let info
     let isMenuScreen
     let isGameOver
+    let newHighScore
+    let blinker = false
 
     // create canvas and game pieces
     function startGame() {
@@ -25,9 +27,10 @@ document.addEventListener("DOMContentLoaded", () => {
         isMenuScreen = false
         myGamePiece = new component(30, 30, "#FFFF00", 30, 30, "circle")
         score = new component("20px", "Consolas", "white", 360, 40, "text")
-        gameTitle = new component("60px", "Warnes", "white", 50, 170, "text")
-        highestScore = new component("20px", "Consolas", "white", 150, 220, "text")
-        info = new component("20px", "Consolas", "white", 100, 0.6*vh, "text")
+        gameTitle = new component("60px", "Warnes", "white", 50, 0.25*vh, "text")
+        highestScore = new component("20px", "Consolas", "white", 200, 0.35*vh, "text")
+        info = new component("20px", "Consolas", "white", 125, 0.6*vh, "text")
+        newHighScore = new component("20px", "Consolas", "red", 165, 0.45*vh, "text")
         backgroundMusic = new sound("music/game-music.mp3")
         levelUp = new sound("music/level-up.mp3")
         gameOver = new sound("music/game-over.mp3")
@@ -36,6 +39,9 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     function menuScreen() {
+        document.querySelector("#game-canvas").classList.add("dark")
+        document.querySelector(".side--right").classList.remove("dark")
+        document.querySelector(".side--left").classList.remove("dark")
         isGameOver = false
         isMenuScreen = true
         menuMusic = new sound("music/start-screen.mp3")
@@ -235,9 +241,11 @@ document.addEventListener("DOMContentLoaded", () => {
             myMenu.clear()
             menuMusic.stop()
             startGame()
-        } else {
+        } 
+        else {
             myMenu.clear()
             myMenu.frameNo += 1
+            
             if (myMenu.frameNo == 1 || everyInterval(80)) {
                 y = myMenu.canvas.height // bottom of the screen
                 x = myMenu.canvas.width
@@ -256,12 +264,13 @@ document.addEventListener("DOMContentLoaded", () => {
             }
             gameTitle.text = "Down Fall"
             highestScore.text = `High score: ${highScore}`
-            info.text = "Press any key to start"
-            if (myMenu.frameNo == 1 || everyInterval(80)) {
-                if (info.text = " ") {
+            if (myMenu.frameNo == 1 || everyInterval(40)) {
+                if (blinker == false) {
                     info.text = "Press any key to start"
-                } else if (info.text = "Press any key to start") {
-                    info.text == " "
+                    blinker = true
+                } else {
+                    info.text = " "
+                    blinker = false
                 }
             }
             gameTitle.update()
@@ -285,51 +294,50 @@ document.addEventListener("DOMContentLoaded", () => {
             highestScore.text = "SCORE: " + myGameArea.score
             if (myGameArea.score > highScore) {
                 highScore = myGameArea.score
+                newHighScore.text = "New highscore!"
             }
-            info.text = "Press any key to continue"
+            info.text = "Press space to continue"
             gameTitle.update()
             highestScore.update()
             info.update()
+            newHighScore.update()
             myGamePiece.newPos()
             myGamePiece.y = 1
             myGamePiece.update()
             myGameArea.stop()
-            document.querySelector("#game-canvas").classList.add("dark")
-            document.querySelector(".side--right").classList.remove("dark")
-            document.querySelector(".side--left").classList.remove("dark")
             window.addEventListener('keyup', function(e) {
-                if (isGameOver == true) {
+                if (isGameOver == true && e.keyCode == 32) {
                     myGameArea.clear()
                     myGameArea.stop()
                     menuScreen()
                 }
             })
-        } else {
+        } else { // increase speed and colour of obstacles as users score increases
             if (myGameArea.score > 49.0) {
-                interval = 20
+                interval = 16
                 levelColor = "#FC6E22"
-                levelSpeed = -6
+                levelSpeed = -7
             } else if (myGameArea.score > 39.0) {
-                interval = 25
+                interval = 20
                 levelColor = "#02B8A2"
-                levelSpeed = -5
+                levelSpeed = -6
             } else if (myGameArea.score > 29.0) {
-                interval = 30
+                interval = 25
                 levelColor = "#0310EA"
-                levelSpeed = -4
+                levelSpeed = -5
             } else if (myGameArea.score > 19.0) {
-                interval = 40
+                interval = 30
                 levelColor = "#FD1C03"
-                levelSpeed = -3
+                levelSpeed = -4
             } else if (myGameArea.score > 9.0) {
                 console.log("true")
-                interval = 60
+                interval = 40
                 levelColor = "#FE53BB"
-                levelSpeed = -2
+                levelSpeed = -3
             } else { //1.5 80
-                interval = 80
+                interval = 60
                 levelColor = "#09FBD3"
-                levelSpeed = -1.5
+                levelSpeed = -2
             }
             myGameArea.clear()
             myGameArea.frameNo += 1
@@ -347,6 +355,12 @@ document.addEventListener("DOMContentLoaded", () => {
             }
             myGamePiece.speedX = 0 // reset speeds to zero, therefore object stops if button press stops
             myGamePiece.speedY = 0
+            if (myGameArea.score != 0 && myGameArea.score % 10 == 0 && myGameArea.score < 52) { //play sound when level up
+                levelUp.play()
+                myObstacles.pop()
+                myObstacles.pop()
+                myGameArea.score += 1
+            }
             for (i = 0; i < myObstacles.length; i++) {
                 if (myGamePiece.touchLeft(myObstacles[i])) {
                     myGamePiece.speedX = 0
@@ -374,9 +388,6 @@ document.addEventListener("DOMContentLoaded", () => {
             for (i = 0; i < myObstacles.length; i++) {
                 myObstacles[i].y += levelSpeed
                 myObstacles[i].update()
-            }
-            if (myGameArea.score != 0 && myGameArea.score % 10 == 0) {
-                levelUp.play()
             }
             score.text = "SCORE: " + myGameArea.score
             score.update()
