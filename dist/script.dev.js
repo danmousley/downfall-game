@@ -18,7 +18,26 @@ document.addEventListener("DOMContentLoaded", function () {
   var isMenuScreen;
   var isGameOver;
   var newHighScore;
-  var blinker = false; // create canvas and game pieces
+  var blinker = false;
+  var mute = false;
+  var muteButton = document.querySelector('#mute');
+  muteButton.addEventListener("click", function (event) {
+    dummy = document.querySelector("audio");
+
+    if (dummy.muted == true) {
+      document.querySelectorAll("audio").forEach(function (sound) {
+        sound.muted = false;
+        mute = false;
+      });
+      muteButton.innerHTML = "<i class='fas fa-volume-mute'></i>";
+    } else {
+      document.querySelectorAll("audio").forEach(function (sound) {
+        sound.muted = true;
+        mute = true;
+      });
+      muteButton.innerHTML = "<i class='fas fa-volume-up'></i>";
+    }
+  }); // create canvas and game pieces
 
   function startGame() {
     document.querySelector("#game-canvas").classList.remove("dark");
@@ -34,7 +53,11 @@ document.addEventListener("DOMContentLoaded", function () {
     backgroundMusic = new sound("music/game-music.mp3");
     levelUp = new sound("music/level-up.mp3");
     gameOver = new sound("music/game-over.mp3");
-    backgroundMusic.play();
+
+    if (mute == false) {
+      backgroundMusic.play();
+    }
+
     myGameArea.start();
   }
 
@@ -45,7 +68,11 @@ document.addEventListener("DOMContentLoaded", function () {
     isGameOver = false;
     isMenuScreen = true;
     menuMusic = new sound("music/start-screen.mp3");
-    menuMusic.play();
+
+    if (mute == false) {
+      menuMusic.play();
+    }
+
     gameTitle = new component("60px", "Warnes", "white", 65, 0.25 * vh, "text");
     highestScore = new component("20px", "Consolas", "white", 170, 0.35 * vh, "text");
     info = new component("20px", "Consolas", "white", 120, 0.6 * vh, "text");
@@ -315,7 +342,11 @@ document.addEventListener("DOMContentLoaded", function () {
     if (myGamePiece.y && myGamePiece.y < 0) {
       isGameOver = true;
       backgroundMusic.stop();
-      gameOver.play();
+
+      if (mute == false) {
+        gameOver.play();
+      }
+
       myGameArea.clear();
       gameTitle.text = "Game Over";
       highestScore.text = "SCORE: " + myGameArea.score;
@@ -398,7 +429,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
       if (myGameArea.score != 0 && myGameArea.score % 10 == 0 && myGameArea.score < 52) {
         //play sound when level up
-        levelUp.play();
+        if (mute == false) {
+          levelUp.play();
+        }
+
         myObstacles.pop();
         myObstacles.pop();
         myGameArea.score += 1;

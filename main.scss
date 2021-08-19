@@ -91,12 +91,33 @@ canvas {
     &__bottom {
         grid-area: bottom;
         height: 7vh;
+        display: flex;
+        justify-content:center;
+        align-items: center;
     }
     &__display {grid-area: display;}
+}
 
 .camera-lense {
     height: 25%;
     width: auto;
 }
 
+.button--mute {
+    border-radius: 100%;
+    background-color: black;
+    border: none;
+    padding: 1%;
+}
+
+.button--mute:hover {
+    cursor: pointer;
+}
+
+.fa-volume-mute {
+    color: lightgray;
+}
+
+.fa-volume-up {
+    color: lightgray;
 }
