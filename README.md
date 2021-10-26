@@ -1,4 +1,4 @@
-#DownFall Game
+# DownFall Game
 
 My recreation of the popular smartphone game 'FallDown'.
 
