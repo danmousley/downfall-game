@@ -2,10 +2,10 @@
 
 My recreation of the popular smartphone game 'FallDown'.
 
-To play:
+## How to Play
 
 1. Clone down the repository.
-2. View in a browser of your choice.
+2. Open in a browser of your choice.
 
 OR
 
